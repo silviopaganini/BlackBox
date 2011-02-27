@@ -14,5 +14,5 @@ If you would like to work with the latest code, you should place the repository 
 Credits
 -------
 developed by 
-< ahref="http://twitter.com/silviopaganini">Silvio Paganini</a>
-< ahref="http://twitter.com/grifotv">Danilo Figueiredo
+<a href="http://twitter.com/silviopaganini">Silvio Paganini</a>
+<a href="http://twitter.com/grifotv">Danilo Figueiredo
