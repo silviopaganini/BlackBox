@@ -17,9 +17,9 @@ Credits
 <a href="http://twitter.com/silviopaganini" target="_blank">Silvio Paganini</a><br>
 <a href="http://twitter.com/grifotv" target="_blank">Danilo Figueiredo
 
-<b>Roundhouse Head of Broadcast and New Media</b> <br>
+<b>Roundhouse</b> <br>
 Conor Roche 
 
-<b>Directors</b>
+<b>Directors</b> <br>
 Jamie Roberts
 William Hanke
