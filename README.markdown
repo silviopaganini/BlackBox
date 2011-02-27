@@ -13,6 +13,6 @@ If you would like to work with the latest code, you should place the repository 
 
 Credits
 -------
-developed by 
+developed by <br>
 <a href="http://twitter.com/silviopaganini" target="_blank">Silvio Paganini</a><br>
 <a href="http://twitter.com/grifotv" target="_blank">Danilo Figueiredo
