@@ -1,6 +1,5 @@
 BlackBox Sessions App
 ====================
-
 BlackBox is an Open Frameworks Application based on <a href="https://github.com/ofTheo/ofxKinect" target="_blank">ofxKinect library</a>
 OpenFrameworks is a cross platform open source toolkit for creative coding in C++.
 <a href="http://www.openframeworks.cc/" target="_blank">http://www.openframeworks.cc/</a>
