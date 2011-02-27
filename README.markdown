@@ -13,6 +13,13 @@ For example, OpenFrameworks/apps/examples/blackbox
 
 Credits
 -------
-code by <br>
+<b>Development</b> <br>
 <a href="http://twitter.com/silviopaganini" target="_blank">Silvio Paganini</a><br>
 <a href="http://twitter.com/grifotv" target="_blank">Danilo Figueiredo
+
+<b>Roundhouse Head of Broadcast and New Media</b> <br>
+Conor Roche 
+
+<b>Directors</b>
+Jamie Roberts
+William Hanke
