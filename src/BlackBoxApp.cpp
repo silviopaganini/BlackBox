@@ -1,14 +1,15 @@
 #include "BlackBoxApp.h"
 
-//--------------------------------------------------------------
+	//--------------------------------------------------------------
 void BlackBoxApp::setup() {
+		// stage
 	ofBackground(0, 0, 0);
 	ofEnableAlphaBlending();
 	ofSetBackgroundAuto(false);
 	ofSetFrameRate(60);
 	ofHideCursor();
 	
-	// INIT VARS
+		// init vars
 	showRGB				= true;		// show RGB camera
 	vColor				= false;	// toogle colours
 	vRandomColor		= false;	// toogle random colours
@@ -27,7 +28,7 @@ void BlackBoxApp::setup() {
 	bw					= false;	// black and white
 	noEffects			= false;	// toggle effects
 	
-	// init kinect
+		// init kinect
 	kinect.init();
 	kinect.setVerbose(true);
 	kinect.open();
@@ -35,9 +36,8 @@ void BlackBoxApp::setup() {
 	kinect.enableDepthNearValueWhite(true);
 	
 	
-	// init particles 
+		// init particles 
 	int i = 0;
-	
 	for(int y = 0; y < HEIGHT; y+= stepParticle) {
 		for(int x = 0; x < WIDTH; x+= stepParticle) {
 			
@@ -46,11 +46,10 @@ void BlackBoxApp::setup() {
 		}
 	}
 	
-	
-	
-	// @danilo
+		// load image for laser effect
 	loadImage();
 	
+		// opencv
 	colorImage.allocate(kinect.width, kinect.height);
 	grayImage.allocate(kinect.width, kinect.height);
 	grayThresh.allocate(kinect.width, kinect.height);
@@ -58,9 +57,8 @@ void BlackBoxApp::setup() {
 	blackAndWhite.allocate(kinect.width, kinect.height);
 }
 
-//--------------------------------------------------------------
-void BlackBoxApp::update() 
-{
+	//--------------------------------------------------------------
+void BlackBoxApp::update()  {
 	kinect.update();
 	colorImage.setFromPixels(kinect.getPixels(), kinect.width, kinect.height);
 	colorImage.flagImageChanged();
@@ -79,32 +77,26 @@ void BlackBoxApp::update()
 			for (int iT = 0; iT < contourFinder.nBlobs; iT++){
 				triangle.triangulate(contourFinder.blobs[iT], max( 3.0f, (float)contourFinder.blobs[iT].nPts/triangleComplexity));
 			}
-			
 			break;
 			
 		case 3:
 			updateParticles();
 			break;
-			
 	}
 }
 
-void BlackBoxApp::updateParticles() 
-{
+void BlackBoxApp::updateParticles() {
 	int i = 0;
-	
 	for(int y = 0; y < HEIGHT; y+= stepParticle) {
 		for(int x = 0; x < WIDTH; x+= stepParticle) {
 			
 			p[i]->update();
 			
 			if(p[i]->dead == true) {
-				
 				p[i] = new Particle();
 			}
 			
-			if(p[i]->inited == false)
-			{
+			if(p[i]->inited == false) {
 				ofPoint cur = kinect.getWorldCoordinateFor(x, y);
 				ofColor color = kinect.getCalibratedColorAt(x,y);
 				
@@ -116,8 +108,7 @@ void BlackBoxApp::updateParticles()
 	}
 }
 
-void BlackBoxApp::contourFinderUpdate() 
-{
+void BlackBoxApp::contourFinderUpdate() {
 	grayImage.setFromPixels(kinect.getDepthPixels(), kinect.width, kinect.height);
 	grayThreshFar = grayImage;
 	grayThresh = grayImage;
@@ -125,31 +116,25 @@ void BlackBoxApp::contourFinderUpdate()
 	grayThresh.threshold(nearThreshold);
 	cvAnd(grayThresh.getCvImage(), grayThreshFar.getCvImage(), grayImage.getCvImage(), NULL);
 	
-	//update the cv image
+		//update the cv image
 	grayImage.flagImageChanged();
 	
-	// find contours which are between the size of 40 pixels and 1/3 the w*h pixels.
-	// also, find holes is set to true so we will get interior contours as well....
-	//contourFinder.findContours(grayImage, 40, (kinect.width*kinect.height)/3, MAX_PEOPLE, false);
+		// find contours which are between the size of 40 pixels and 1/3 the w*h pixels.
+		// also, find holes is set to true so we will get interior contours as well....
 	contourFinder.findContours(grayImage, 20, kinect.width*kinect.height, MAX_PEOPLE, true);
 }
 
-void BlackBoxApp::toogleRGB()
-{
-	if(noEffects){
+void BlackBoxApp::toogleRGB() {
+	if(noEffects) {
 		colorImage.draw(0, 0, ofGetWidth(), ofGetHeight());
 		
-		if(bw){
+		if(bw) {
 			blackAndWhite.setFromColorImage(colorImage);
 			blackAndWhite.draw(0, 0, ofGetWidth(), ofGetHeight());
 		}		
-		
-	} else{
-		
+	} else {
 		if(showRGB)	{
-			
 			if(drawMethod != 1 && drawMethod != 2 && drawMethod != 3){
-				
 				colorImage.draw(0, 0, ofGetWidth(), ofGetHeight());
 				
 				if(bw){
@@ -157,36 +142,29 @@ void BlackBoxApp::toogleRGB()
 					blackAndWhite.draw(0, 0, ofGetWidth(), ofGetHeight());
 				}		
 			} else{
-				
 				ofSetColor(0, 0, 0, bgUpdateRatio);
 				ofRect(0, 0, ofGetWidth(), ofGetHeight());
 				
 				colorImage.draw(0, 0, 0, 0);
 			}
-			
 		} else {
-			
 			ofSetColor(0, 0, 0, bgUpdateRatio);
 			ofRect(0, 0, ofGetWidth(), ofGetHeight());
 			
 			colorImage.draw(0, 0, 0, 0);
 		}
-		
 	}
-	
 }
 
-void BlackBoxApp::draw() 
-{
+void BlackBoxApp::draw() {
 	toogleRGB();
 	
 	if(noEffects) return;
-	
+		
 	ofPushMatrix();
 	ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
 	
-	switch (drawMethod) 
-	{
+	switch (drawMethod) {
 		case 1:
 			rotationPointCloud += (kbControlEase - rotationPointCloud)/ease;
 			ofRotateY(rotationPointCloud);
@@ -225,7 +203,7 @@ void BlackBoxApp::draw()
 			break;
 			
 		case 8:
-			drawTriangleColour();
+			drawTriangleColor();
 			break;
 			
 		case 9:
@@ -237,16 +215,13 @@ void BlackBoxApp::draw()
 	
 	ofSetColor(255, 255, 255);
 	string showrgbString = "showRGB: "+ofToString(showRGB, 2);
-	//	ofDrawBitmapString(showrgbString, 200, 200);
 }
 
-void BlackBoxApp::drawParticlesCloud() 
-{
+void BlackBoxApp::drawParticlesCloud() {
 	int i = 0;
 	
 	for(int y = 0; y < HEIGHT; y+= stepParticle) {
 		for(int x = 0; x < WIDTH; x+= stepParticle) {
-			
 			p[i]->draw();
 			i++;
 		}
@@ -254,8 +229,7 @@ void BlackBoxApp::drawParticlesCloud()
 	
 }
 
-void BlackBoxApp::drawPixels()
-{	
+void BlackBoxApp::drawPixels() {	
 	glBegin(GL_QUADS);
 	
 	int step = 5;
@@ -278,8 +252,7 @@ void BlackBoxApp::drawPixels()
 			ofPoint cur = kinect.getWorldCoordinateFor(x, y);
 			ofColor color = kinect.getCalibratedColorAt(x, y);
 			
-			if(vRandomColor)
-			{
+			if(vRandomColor) {
 				ofSetColor(r,g,b);
 			} else {
 				glColor3ub((unsigned char)color.r,(unsigned char)color.g,(unsigned char)color.b);
@@ -287,25 +260,20 @@ void BlackBoxApp::drawPixels()
 			
 			float size = cur.z / 110;
 			
-			if(cur.z < 2){
-				
+			if(cur.z < 2) {
 				glVertex2f(cur.x, cur.y);
 				glVertex2f(cur.x + size, cur.y);
 				glVertex2f(cur.x + size, cur.y + size); 
 				glVertex2f(cur.x, cur.y + size);
-				
 			}
 		}
 	}
 	
 	ofPopStyle();
-	
 	glEnd();
 }
 
-void BlackBoxApp::drawPointCloud() 
-{
-	
+void BlackBoxApp::drawPointCloud() {
 	glBegin(GL_POINTS);
 	
 	int step = 2;
@@ -326,16 +294,12 @@ void BlackBoxApp::drawPointCloud()
 			ofPoint cur = kinect.getWorldCoordinateFor(x, y);
 			ofColor color = kinect.getCalibratedColorAt(x,y);
 			
-			if(vColor){
-				if(vRandomColor){
-					
+			if(vColor) {
+				if(vRandomColor) {
 					glColor3ub(r, g, b);
-					
 				} else {
-					
 					glColor3ub((unsigned char)color.r,(unsigned char)color.g,(unsigned char)color.b);
 				}
-				
 			} else {
 				glColor3ub(255, 255, 255);
 			}
@@ -348,8 +312,7 @@ void BlackBoxApp::drawPointCloud()
 	glEnd();
 }
 
-void BlackBoxApp::drawCircleCloud()
-{
+void BlackBoxApp::drawCircleCloud() {
 	int step = 10;
 	
 	if(timerRandomColor % 20 == 0){
@@ -370,8 +333,7 @@ void BlackBoxApp::drawCircleCloud()
 			ofPoint cur = kinect.getWorldCoordinateFor(x, y);
 			ofColor color = kinect.getCalibratedColorAt(x, y);
 			
-			if(vRandomColor)
-			{
+			if(vRandomColor) {
 				ofSetColor(r,g,b);
 			} else {
 				ofSetColor((unsigned char)color.r,(unsigned char)color.g,(unsigned char)color.b);
@@ -384,8 +346,8 @@ void BlackBoxApp::drawCircleCloud()
 	ofPopStyle();
 }
 
-void BlackBoxApp::drawContour()
-{
+void BlackBoxApp::drawContour() {
+		//set color
 	int r = ofRandom(0, 255);
 	int g = ofRandom(0, 255);
 	int b = ofRandom(0, 255);
@@ -398,33 +360,41 @@ void BlackBoxApp::drawContour()
 	} 
 	
 	if(!vRandomColor && !bw){
-		
 		randomColorContour.r = ofRandom(0, 150);
 		randomColorContour.g = ofRandom(75, 220);
 		randomColorContour.b = ofRandom(200, 255);
-		timerRandomColor = 0;
-		
 	} else if(bw){
-		
 		randomColorContour.r = 255;
 		randomColorContour.g = 255;
 		randomColorContour.b = 255;
 		timerRandomColor = 0;
-		
 	}
-	
+
 	timerRandomColor++;
 	
-	contourFinder.drawNoBox(-ofGetWidth()*0.5, -ofGetHeight()*0.5, ofGetWidth(), ofGetHeight(), randomColorContour);
+		//draw blobs
+    ofPushStyle();
+	ofSetColor(randomColorContour.r, randomColorContour.g, randomColorContour.b);
+	
+	for( int i=0; i<(int)contourFinder.blobs.size(); i++ ) {
+		ofNoFill();
+		ofBeginShape();
+		for( int j=0; j<contourFinder.blobs[i].nPts; j++ ) {
+			ofVertex( getResizedX(contourFinder.blobs[i].pts[j].x), getResizedY(contourFinder.blobs[i].pts[j].y) );
+		}
+		ofEndShape();
+		
+	}
+	glPopMatrix();
+	ofPopStyle();
 }
 
-void BlackBoxApp::drawTriangleLines()
-{
+void BlackBoxApp::drawTriangleLines() {
 	ofPushStyle();
 	
 	ofxTriangleData* tData;
 	int i = triangle.triangles.size() - 1;
-	int step = 1;  //ofRandom(1, 10);
+	int step = 1;
 	for (; i>=0; i-=step) {
 		tData = &triangle.triangles[i];
 		
@@ -434,7 +404,6 @@ void BlackBoxApp::drawTriangleLines()
 			ofSetColor(ofRandom(0, 150), ofRandom(75, 220), ofRandom(200, 255), 255);
 		}
 		
-		
 		ofLine(getResizedX(tData->a.x), getResizedY(tData->a.y), getResizedX(tData->b.x), getResizedY(tData->b.y));
 		ofLine(getResizedX(tData->b.x), getResizedY(tData->b.y), getResizedX(tData->c.x), getResizedY(tData->c.y));
 		ofLine(getResizedX(tData->c.x), getResizedY(tData->c.y), getResizedX(tData->a.x), getResizedY(tData->a.y));
@@ -443,7 +412,7 @@ void BlackBoxApp::drawTriangleLines()
 	ofPopStyle();
 }
 
-void BlackBoxApp::drawTriangleColour() {
+void BlackBoxApp::drawTriangleColor() {
     ofPushStyle();
     
     ofFill();
@@ -475,44 +444,35 @@ void BlackBoxApp::drawTriangleBlue() {
     ofPopStyle();
 }
 
-void BlackBoxApp::drawLaser()
-{
+void BlackBoxApp::drawLaser() {
 	ofPushStyle();
 	
 	ofxTriangleData* tData;
 	int i = triangle.triangles.size() - 1;
-	int step = 1;//ofRandom(1, 10);
+	int step = 1;
 	int scale;
 	for (; i>=0; i-=step) {
 		tData = &triangle.triangles[i];
 		
-		//lines
+			//lines
 		ofSetColor(ofRandom(0, 150), ofRandom(75, 220), ofRandom(200, 255), ofRandom(1, 20));
 		ofLine(getResizedX(tData->a.x), getResizedY(tData->a.y), 0, 0);
 		ofLine(getResizedX(tData->b.x), getResizedY(tData->b.y), 0, 0);
 		ofLine(getResizedX(tData->c.x), getResizedY(tData->c.y), 0, 0);
 		
-		//gradient center
-		//ofSetColor(0, 0, 0, 10);
-		//image.draw(0.0, 0.0, 700, 700);	
-		
-		//dots
+			//dots
 		ofSetColor(ofRandom(0, 150), ofRandom(75, 220), ofRandom(200, 255), 40);
 		
 		scale = ofRandom(1, 100);
 		ofPushMatrix();
 		ofTranslate(getResizedX(tData->a.x), getResizedY(tData->a.y), 0);
 		ofRotateX(ofRandom(0, 360));
-		//ofRotateY(ofRandom(0, 360));
-		//ofRotateZ(ofRandom(0, 360));
 		image.draw(0.0, 0.0, scale, scale);
 		ofPopMatrix();
 		
 		scale = ofRandom(1, 100);
 		ofPushMatrix();
 		ofTranslate(getResizedX(tData->b.x), getResizedY(tData->b.y), 0);
-		//ofRotateX(ofRandom(0, 360));
-		//ofRotateY(ofRandom(0, 360));
 		ofRotateZ(ofRandom(0, 360));
 		image.draw(0.0, 0.0, scale, scale);
 		ofPopMatrix();
@@ -520,28 +480,15 @@ void BlackBoxApp::drawLaser()
 		scale = ofRandom(1, 100);
 		ofPushMatrix();
 		ofTranslate(getResizedX(tData->c.x), getResizedY(tData->c.y), 0);
-		//ofRotateX(ofRandom(0, 360));
 		ofRotateY(ofRandom(0, 360));
-		//ofRotateZ(ofRandom(0, 360));
 		image.draw(0.0, 0.0, scale, scale);
 		ofPopMatrix();
-		
-		
-		//ofLine(getResizedX(tData->a.x), getResizedY(tData->a.y), getResizedX(tData->b.x), getResizedY(tData->b.y));
-		//ofLine(getResizedX(tData->b.x), getResizedY(tData->b.y), getResizedX(tData->c.x), getResizedY(tData->c.y));
-		//ofLine(getResizedX(tData->c.x), getResizedY(tData->c.y), getResizedX(tData->a.x), getResizedY(tData->a.y));
-		
-		
-		//ofSetColor(ofRandom(0, 150), ofRandom(75, 220), ofRandom(200, 255), 255);
-		//ofLine(getResizedX(tData->a.x)*zoom, getResizedY(tData->a.y)*zoom, getResizedX(tData->b.x)*zoom, getResizedY(tData->b.y)*zoom);
-		//ofLine(getResizedX(tData->b.x)*zoom, getResizedY(tData->b.y)*zoom, getResizedX(tData->c.x)*zoom, getResizedY(tData->c.y)*zoom);
-		//ofLine(getResizedX(tData->c.x)*zoom, getResizedY(tData->c.y)*zoom, getResizedX(tData->a.x)*zoom, getResizedY(tData->a.y)*zoom);
 	}
 	
 	ofPopStyle();
 }
 
-//--------------------------------------------------------------
+	//--------------------------------------------------------------
 float BlackBoxApp::getResizedX(float x) {
 	return (x * ofGetWidth()) / contourFinder.getWidth() - ofGetWidth()/2;
 }
@@ -550,26 +497,23 @@ float BlackBoxApp::getResizedY(float y) {
 	return (y * ofGetHeight()) / contourFinder.getHeight() - ofGetHeight()/2;
 }
 
-void BlackBoxApp::loadImage() 
-{
+void BlackBoxApp::loadImage() {
 #ifdef TARGET_OSX   
-	// Get the absolute location of the executable file in the bundle.
+		// Get the absolute location of the executable file in the bundle.
 	CFBundleRef appBundle     = CFBundleGetMainBundle();
 	CFURLRef   executableURL = CFBundleCopyExecutableURL(appBundle);
 	char execFile[4096];
-	if (CFURLGetFileSystemRepresentation(executableURL, TRUE, (UInt8 *)execFile, 4096))
-	{
-		// Strip out the filename to just get the path
+	if (CFURLGetFileSystemRepresentation(executableURL, TRUE, (UInt8 *)execFile, 4096)) {
+			// Strip out the filename to just get the path
 		string strExecFile = execFile;
 		int found = strExecFile.find_last_of("/");
 		string strPath = strExecFile.substr(0, found);
 		
-		// Change the working directory to that of the executable
+			// Change the working directory to that of the executable
 		if(-1 == chdir(strPath.c_str())) {
 			ofLog(OF_LOG_ERROR, "Unable to change working directory to executable's directory.");
 		}
-	}
-	else {
+	} else {
 		ofLog(OF_LOG_ERROR, "Unable to identify executable's directory.");
 	}
 	CFRelease(executableURL);
@@ -579,8 +523,7 @@ void BlackBoxApp::loadImage()
 	image.setAnchorPercent(0.5, 0.5);
 }	
 
-void BlackBoxApp::setDrawMethod(int method)
-{
+void BlackBoxApp::setDrawMethod(int method) {
 	noEffects = false;
 	drawMethod = method;
 }
@@ -590,9 +533,7 @@ void BlackBoxApp::exit(){
 }
 
 void BlackBoxApp::keyPressed (int key) {
-	
 	switch (key) {
-			
 		case '1':
 			setDrawMethod(1);
 			break;
@@ -620,7 +561,7 @@ void BlackBoxApp::keyPressed (int key) {
 		case '9':
 			setDrawMethod(9);
 			break;
-			
+		
 		case 'C':
 		case 'c':
 			vColor = !vColor;
@@ -653,7 +594,7 @@ void BlackBoxApp::keyPressed (int key) {
 			nearThreshold ++;
 			if (nearThreshold > 255) nearThreshold = 255;
 			break;
-			
+		
 		case '-':		
 			nearThreshold --;
 			if (nearThreshold < 0) nearThreshold = 0;

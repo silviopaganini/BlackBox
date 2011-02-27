@@ -14,36 +14,35 @@
 class BlackBoxApp : public ofBaseApp {
 public:
 	
-	// OFX
+		// OFX
 	void	setup();
 	void	update();
 	void	draw();
 	void	exit();
 	void	keyPressed (int key);
 	
-	// EFFECTS
+		// EFFECTS
 	void	drawPointCloud();
 	void	drawParticlesCloud();
 	void	drawCircleCloud();
 	void	drawPixels();
 	void	drawTriangleLines();
-	void	drawTriangleColour();
+	void	drawTriangleColor();
 	void	drawTriangleBlue();
 	void 	drawLaser();
 	void 	drawContour();
 	
-	// HELPERS
+		// HELPERS
 	void	loadImage();
 	void	contourFinderUpdate();
 	void	updateParticles();
 	void	toogleRGB();
 	void	setDrawMethod(int method);
 	
-	// VARS
-	
+		// VARS
 	Particle*				p[HEIGHT * WIDTH];
 	ofImage					image;
-	
+			
 	float					ease;
 	float					rotationPointCloud;
 	float					kbControlEase, zoom, kbZoom;
@@ -55,9 +54,9 @@ public:
 	int						drawMethod, nearThreshold, farThreshold, angle;
 	int						triangleComplexity; //the smaller the more complex and slower
 	int						bgUpdateRatio;
-	
+		
 	bool					vColor, vRandomColor, showRGB, bw, noEffects;
-	
+
 	ofxTriangle				triangle;
 	ofxKinect				kinect;
 	ofxCvColorImage			colorImage;
