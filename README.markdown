@@ -4,6 +4,8 @@ BlackBox is an Open Frameworks Application based on <a href="https://github.com/
 OpenFrameworks is a cross platform open source toolkit for creative coding in C++.
 <a href="http://www.openframeworks.cc/" target="_blank">http://www.openframeworks.cc/</a>
 
+<iframe width="425" height="349" src="http://www.youtube.com/embed/XEfkvPiETPc" frameborder="0" allowfullscreen></iframe>
+
 Instalation
 -----------
 To use BlackBox App, first you need to download and install Open Frameworks. BlackBox is developed against the latest version of Open Frameworks on github, but will also work with recent releases of OF like r62.
